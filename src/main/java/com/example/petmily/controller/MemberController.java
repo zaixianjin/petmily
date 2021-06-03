@@ -15,14 +15,14 @@ import com.example.petmily.service.MemberService;
 @RequestMapping("/api/member")
 public class MemberController {
 	private final MemberService memberService = null;
-	
+
 	@GetMapping("/memberhello")
 	public String getMemberHello() {
 		return "Member Hello";
 	}
 
 	@GetMapping("/member/teams/{teamId}")
-	public ResponseEntity<List<Member>> findAllMemberByTeamId(@PathVariable Long teamId){
+	public ResponseEntity<List<Member>> findAllMemberByTeamId(@PathVariable Long teamId) {
 		return ResponseEntity.ok().body(memberService.findAllMemberByTeamId(teamId));
 	}
 }

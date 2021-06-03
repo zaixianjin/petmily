@@ -29,18 +29,18 @@ public class Member {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
+
 	@ManyToOne
-	@JoinColumn(name="team_id") 
+	@JoinColumn(name = "team_id")
 	private Team team;
-	
+
 	@Column(name = "name")
 	private String name;
-	
+
 	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
 	private Role role;
-	
+
 	@Column(name = "contact")
 	@Embedded
 	private Contact contact;

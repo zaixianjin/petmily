@@ -1,5 +1,7 @@
 package com.example.petmily.entity;
 
+import java.util.UUID;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,38 +23,36 @@ public class Pet {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
 	private Long id;
-	
-	@Column(name = "pettype")
-	private String pettype;
-	
+
+	@Column(name = "petType")
+	private String petType;
+
 	@Column(name = "name")
 	private String name;
 
 	@Column(name = "age")
 	private String age;
-	
+
 	@Column(name = "weight")
 	private String weight;
-	
+
 	@Column(name = "photo")
 	private String photo;
-	
-	//식별번호
+
+	// 식별번호
 	@Column(name = "idnum")
 	private String idnum;
 
-	//소개글
+	// 소개글
 	@Column(name = "introduce")
 	private String introduce;
-	
-	//중성화여부
+
+	// 중성화여부
 	@Column(name = "neutralization")
 	private String neutralization;
-	
-	//memberId
+
+	// memberId
 	@Column(name = "memberId")
 	private String memberId;
-	
-	
-	
+
 }
