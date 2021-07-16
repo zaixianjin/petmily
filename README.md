@@ -48,9 +48,8 @@
 1. 장애격리
     1. 매칭 기능이 수행되지 않더라도 회원 등록 및 애완동물 등록 가능해야 한다.   Async (event-driven), Eventual Consistency
     2. 평가 기능이 수행되지 않더라도 사용자, 매칭, 애완동물, 일지 등록 기능은 정상 작동해야 한다. Async (event-driven), Eventual Consistency
-    1. 매칭 기능에 과부하가 걸리면 매칭을 잠시동안 진행하지 않고 잠시후에 하도록 유도한다.  Circuit breaker, fallback
 1. 성능
-    1. 회원이 돌봄 상태를 실시간으로 조회할 수 있어야 한다.  CQRS
+    1. 회원이 돌봄 상태를 실시간으로 조회할 수 있어야 한다.  
 
 
 # 2. 체크포인트
@@ -58,162 +57,151 @@
 - 분석 설계
 
 
-- 이벤트스토밍:
-    - 스티커 색상별 객체의 의미를 제대로 이해하여 헥사고날 아키텍처와의 연계 설계에 적절히 반영하고 있는가?
-    - 각 도메인 이벤트가 의미있는 수준으로 정의되었는가?
-    - 어그리게잇: Command와 Event 들을 ACID 트랜잭션 단위의 Aggregate 로 제대로 묶었는가?
-    - 기능적 요구사항과 비기능적 요구사항을 누락 없이 반영하였는가?
-
-- 서브 도메인, 바운디드 컨텍스트 분리
-    - 팀별 KPI 와 관심사, 상이한 배포주기 등에 따른  Sub-domain 이나 Bounded Context 를 적절히 분리하였고 그 분리 기준의 합리성이 충분히 설명되는가?
-        - 적어도 3개 이상 서비스 분리
-    - 폴리글랏 설계: 각 마이크로 서비스들의 구현 목표와 기능 특성에 따른 각자의 기술 Stack 과 저장소 구조를 다양하게 채택하여 설계하였는가?
-    - 서비스 시나리오 중 ACID 트랜잭션이 크리티컬한 Use 케이스에 대하여 무리하게 서비스가 과다하게 조밀히 분리되지 않았는가?
-- 컨텍스트 매핑 / 이벤트 드리븐 아키텍처
-    - 업무 중요성과  도메인간 서열을 구분할 수 있는가? (Core, Supporting, General Domain)
-    - Request-Response 방식과 이벤트 드리븐 방식을 구분하여 설계할 수 있는가?
-    - 장애격리: 서포팅 서비스를 제거 하여도 기존 서비스에 영향이 없도록 설계하였는가?
-    - 신규 서비스를 추가 하였을때 기존 서비스의 데이터베이스에 영향이 없도록 설계(열려있는 아키택처)할 수 있는가?
-    - 이벤트와 폴리시를 연결하기 위한 Correlation-key 연결을 제대로 설계하였는가?
-
+- Microservice Outer/Inner Architecture 수립:
+    - Microservice based Architecutre 구성 요소 종류와 요소 간 관계를 설명할 수 있는가?
+        (API G/W, BFF, Core MS, Base MS, CI/CD, ACL 등)
+    - 구성 요소들의 내부 구조를 설명할 수 있으며, 데이터 접근 전략 수립 및 퍼블리싱이
+        가능한가?(헥사고널 아키텍처, 레이어드아키텍처, ORM, Restful API 설계 원칙/성숙도 등)
+- Microservice 기반(Base, Backing)서비스 활용
+    -  Biz Microservice가 원활하게 서비스하게 해주는 기반 서비스 및 Backing 서비스의
+        구축/활용이 가능한가? (Spring Cloud Service 활용 : Eureka, Hystrix, Config 등)
+    - 다양한 Language를 사용해야 하는 마이크로서비스 아키텍처에서는 Spring Cloud만
+        이용하면 Java 외 언어를 지원할 수가 없는데, Polyglot 관점에서 어떻게 해야 하는가?      
+- BIZ Microservice 식별
+    - BIZ Microservice를 응집성 높고, 의존성이 낮도록 식별하여, 독립적 수정/배포
+        할 수 있는가? (도메인 주도설계 : Bounded Context/Context Map)
+    - 마이크로서비스를 분리하는 기준은 도메인 주도 설계뿐인가? 그 외적인 부분은 없는가?
+        (도메인 주도 설계 외에 다른 관점에서 서비스를 식별한다면?)
+    - 도메인 모델 패턴과 데이터 모델 패턴의 차이점을 정확히 이해하고 있는가?
+- BiZ Microservice 상세 설계
+    - BIZ Microservice의 내부구조의 각 레이어의 역할에 맞도록 비즈 기능을
+        설계할 수 있는가? (API 설계, 데이터 모델링, 객체모델링, 외부 연계 등) 
+- 서비스 API 설계
+    - RESTful API에 대해 이해하고 있는가? 서비스별 API를 설계 할 수 있는가?
+    - 마이크로서비스가 모든 환경에 적합한 것은 아닌데, 이를 구분하는 점은 무엇인가?    
+- Data Considency(데이터 일관성)전략 수립
+    - 마이크로서비스에서 DB를 분할하기 위한 방법을 제시하고 보완책을 설계할 수 있는가?
+        - 비동기 이벤트 기반 SAGA패턴, 이벤트소싱 & CQRS 지식을 바탕으로
+          보완책 설계 가능 여부
+          (Polyglot Database, Event Sourcing/CQRS, EDA, SAGA, RabbitMQ, 카프카 등)
 - 헥사고날 아키텍처
     - 설계 결과에 따른 헥사고날 아키텍처 다이어그램을 제대로 그렸는가?
 
 - 구현
-    - [DDD] 분석단계에서의 스티커별 색상과 헥사고날 아키텍처에 따라 구현체가 매핑되게 개발되었는가?
-        - Entity Pattern 과 Repository Pattern 을 적용하여 JPA 를 통하여 데이터 접근 어댑터를 개발하였는가
-        - [헥사고날 아키텍처] REST Inbound adaptor 이외에 gRPC 등의 Inbound Adaptor 를 추가함에 있어서 도메인 모델의 손상을 주지 않고 새로운 프로토콜에 기존 구현체를 적응시킬 수 있는가?
-        - 분석단계에서의 유비쿼터스 랭귀지 (업무현장에서 쓰는 용어) 를 사용하여 소스코드가 서술되었는가?
-    - Request-Response 방식의 서비스 중심 아키텍처 구현
-        - 마이크로 서비스간 Request-Response 호출에 있어 대상 서비스를 어떠한 방식으로 찾아서 호출 하였는가? (Service Discovery, REST, FeignClient)
-        - 서킷브레이커를 통하여  장애를 격리시킬 수 있는가?
-    - 이벤트 드리븐 아키텍처의 구현
-        - 카프카를 이용하여 PubSub 으로 하나 이상의 서비스가 연동되었는가?
-        - Correlation-key:  각 이벤트 건 (메시지)가 어떠한 폴리시를 처리할때 어떤 건에 연결된 처리건인지를 구별하기 위한 Correlation-key 연결을 제대로 구현 하였는가?
-        - Message Consumer 마이크로서비스가 장애상황에서 수신받지 못했던 기존 이벤트들을 다시 수신받아 처리하는가?
-        - Scaling-out: Message Consumer 마이크로서비스의 Replica 를 추가했을때 중복없이 이벤트를 수신할 수 있는가
-        - CQRS: Materialized View 를 구현하여, 타 마이크로서비스의 데이터 원본에 접근없이(Composite 서비스나 조인SQL 등 없이) 도 내 서비스의 화면 구성과 잦은 조회가 가능한가?
-
-    - 폴리글랏 플로그래밍
-        - 각 마이크로 서비스들이 하나이상의 각자의 기술 Stack 으로 구성되었는가?
-        - 각 마이크로 서비스들이 각자의 저장소 구조를 자율적으로 채택하고 각자의 저장소 유형 (RDB, NoSQL, File System 등)을 선택하여 구현하였는가?
-    - API 게이트웨이
-        - API GW를 통하여 마이크로 서비스들의 집입점을 통일할 수 있는가?
-        - 게이트웨이와 인증서버(OAuth), JWT 토큰 인증을 통하여 마이크로서비스들을 보호할 수 있는가?
+    - 환경 설정 
+        -  Java의 경우 Maven or Gradle로 마이크로 서비스의 요건에 따라 개발 환경을
+            설정할 수 있는가?
+    - Container
+        - Docker, Kubernetes, Jenkins를 사용하여 배포 할 수 있으며 단계별로 설명이 가능한가?
+        - 각 단계마다 어플리케이션 구현 시 고려해야 할 사항은 무엇인가?
+        - Kubernetes Ingress Controller를 이해하고 Load Balancer와 연동하여 활용할 수 있는가?
+    - 개발 패턴  
+        - MVC, MVVM의 차이점에 대해서 이해하고 있는가?
+    - 데이터 핸들링  
+        - 어플리케이션에서 데이터베이스를 핸들링할때 주로 사용될 수 있는 ORM과
+          각 ORM 마다의 장단점을 명확하게 이해하고 있는가? 
+    - 환경 이해(Dev, Staging, Production)
+        - 어플리케이션 개발 시 일반적으로 Dev, Staging, Production 환경에 따라 
+          설정 정보들이 달라질 수 있는데, 이 경우 어떻게 해야 하는가?
+    - Cloud App Back-End 구현
+        - 정의된 BackEnd Architecutre에 맞도록 표준 샘플을 작성하고, 가이드 할 수 있는가?
+            - 비즈 로직 개발, 인증/인가, 기반 서비스 연계, 대외연계, 저장소 처리 구현 가능 여부
+              (Spring Boot, Spring Security, Spring Cloud Connector 활용 기반)
 - 운영
-    - SLA 준수
-        - 셀프힐링: Liveness Probe 를 통하여 어떠한 서비스의 health 상태가 지속적으로 저하됨에 따라 어떠한 임계치에서 pod 가 재생되는 것을 증명할 수 있는가?
-        - 서킷브레이커, 레이트리밋 등을 통한 장애격리와 성능효율을 높힐 수 있는가?
-        - 오토스케일러 (HPA) 를 설정하여 확장적 운영이 가능한가?
-        - 모니터링, 앨럿팅:
-    - 무정지 운영 CI/CD (10)
-        - Readiness Probe 의 설정과 Rolling update을 통하여 신규 버전이 완전히 서비스를 받을 수 있는 상태일때 신규버전의 서비스로 전환됨을 siege 등으로 증명
-        - Contract Test :  자동화된 경계 테스트를 통하여 구현 오류나 API 계약위반를 미리 차단 가능한가?
+    - Auto-Scaler Policy
+        - 워크로드의 트래픽 패턴에 맞는 자동스케일링 정책을 지정하고,
+            App. 특성(CPU vs Disk Centric 등)에 맞도록 CPU/Memory/Throughput 임계치를
+            지정할 수 있는가?
+    - 블루-그린 배포, CI/CD
+        - Jenkins로 PaaS에 배포하는 Space별 배포 Job과 파이프라인을 구성할 수 있는가?
+        - 블루그린 배포 또는 Canary 배포 패턴을 적용하여 배포를 설계하고 수행할 수 있는가?
+    - 모니터링
+        - 컨테이너 기반 환경에서 애플리케이션 인스턴스를 모니터링하고, Prometheus OSS를
+          활용해 애플리케이션 인스턴스의 리소스(CPU, Memory, Disk, N/W) 성능 및 상태를
+          확인할 수 있는가?
+        - 모니터링과 연계된 Auto-Scaler Policy 구성이 가능한가?
+    - 로깅
+        - 컨테이너 기반 환경에서 애플리케이션 로그를 수집, 저장 및 분석 가능한가?
+          (Fluent, Filebeat OSS를 활용하여 애플리케이션 로그 수집 & 수집 로그를
+          ElasticSearch와 같은 저장소에 저장하고 Kibana등을 활용하여 분석 등)
 
 
 # 3. 분석/설계
 
 
-## AS-IS 조직 (Horizontally-Aligned)
-![image](https://user-images.githubusercontent.com/487999/79684144-2a893200-826a-11ea-9a01-79927d3a0107.png)
+## 3.1 조직 (Scrum Team Board)
+![image](https://factory-git.cloudzcp.io/attachments/4ff517aa-a649-466a-af62-6ad7c0ce9601)
+- 스크럼 팀은 관리자가 없으며 자율적, 주도적으로 일하는 조직으로 구성
 
-## TO-BE 조직 (Vertically-Aligned)
-![image](https://user-images.githubusercontent.com/487999/79684159-3543c700-826a-11ea-8d5f-a3fc0c4cad87.png)
+## 3.2 Team Project Vision
+![image](https://factory-git.cloudzcp.io/attachments/385a9faa-649e-4818-97de-687c758869de)
+- 스크럼 팀 프로젝트 Petmily의 Vision 정의
 
+## 3.3 Event Storming 결과
+![image](https://factory-git.cloudzcp.io/attachments/2d4e103b-cfd6-4577-b1a5-f0bb0de2de1a)
 
-## 3.1 Event Storming 결과
-* MSAEz 로 모델링한 이벤트스토밍 결과:  http://msaez.io/#/storming/nZJ2QhwVc4NlVJPbtTkZ8x9jclF2/every/a77281d704710b0c2e6a823b6e6d973a/-M5AV2z--su_i4BfQfeF
+    - DDD(Domain Driven Design) 도메인 주도 설계 통한 마이크로서비스 식별
+        - Domain Event, Hot Spot, Command, Actor, Entity, Aggregate 찾기
+        - 도메인 모델을 구분하는 경계인 Bounded Context (한정된 문맥) 찾기
+        - MicroService(마이크로 서비스) 식별
+        - Service Mapping Diagram(서비스 매핑 다이어그램) 도출
+        - 각 MSA 서비스별 Service Specification(서비스 스펙) 작성
+### Key Concept
 
+![image](https://factory-git.cloudzcp.io/attachments/aacfde0a-3870-4164-afe4-c0f4a05c3c8f)
 
-### 이벤트 도출
-![image](https://user-images.githubusercontent.com/487999/79683604-47bc0180-8266-11ea-9212-7e88c9bf9911.png)
-
-### 부적격 이벤트 탈락
-![image](https://user-images.githubusercontent.com/487999/79683612-4b4f8880-8266-11ea-9519-7e084524a462.png)
-
-    - 과정중 도출된 잘못된 도메인 이벤트들을 걸러내는 작업을 수행함
-        - 주문시>메뉴카테고리선택됨, 주문시>메뉴검색됨 :  UI 의 이벤트이지, 업무적인 의미의 이벤트가 아니라서 제외
-
-### 액터, 커맨드 부착하여 읽기 좋게
-![image](https://user-images.githubusercontent.com/487999/79683614-4ee30f80-8266-11ea-9a50-68cdff2dcc46.png)
-
-### 어그리게잇으로 묶기
-![image](https://user-images.githubusercontent.com/487999/79683618-52769680-8266-11ea-9c21-48d6812444ba.png)
-
-    - app의 Order, store 의 주문처리, 결제의 결제이력은 그와 연결된 command 와 event 들에 의하여 트랜잭션이 유지되어야 하는 단위로 그들 끼리 묶어줌
-
-### 바운디드 컨텍스트로 묶기
-
-![image](https://user-images.githubusercontent.com/487999/79683625-560a1d80-8266-11ea-9790-40d68a36d95d.png)
-
-    - 도메인 서열 분리 
-        - Core Domain:  app(front), store : 없어서는 안될 핵심 서비스이며, 연견 Up-time SLA 수준을 99.999% 목표, 배포주기는 app 의 경우 1주일 1회 미만, store 의 경우 1개월 1회 미만
-        - Supporting Domain:   marketing, customer : 경쟁력을 내기위한 서비스이며, SLA 수준은 연간 60% 이상 uptime 목표, 배포주기는 각 팀의 자율이나 표준 스프린트 주기가 1주일 이므로 1주일 1회 이상을 기준으로 함.
-        - General Domain:   pay : 결제서비스로 3rd Party 외부 서비스를 사용하는 것이 경쟁력이 높음 (핑크색으로 이후 전환할 예정)
-
-### 폴리시 부착 (괄호는 수행주체, 폴리시 부착을 둘째단계에서 해놔도 상관 없음. 전체 연계가 초기에 드러남)
-
-![image](https://user-images.githubusercontent.com/487999/79683633-5aced180-8266-11ea-8f42-c769eb88dfb1.png)
-
-### 폴리시의 이동과 컨텍스트 매핑 (점선은 Pub/Sub, 실선은 Req/Resp)
-
-![image](https://user-images.githubusercontent.com/487999/79683641-5f938580-8266-11ea-9fdb-4e80ff6642fe.png)
-
-### 완성된 1차 모형
-
-![image](https://user-images.githubusercontent.com/487999/79683646-63bfa300-8266-11ea-9bc5-c0b650507ac8.png)
-
-    - View Model 추가
-
-### 1차 완성본에 대한 기능적/비기능적 요구사항을 커버하는지 검증
-
-![image](https://user-images.githubusercontent.com/487999/79684167-3ecd2f00-826a-11ea-806a-957362d197e3.png)
-
-    - 고객이 메뉴를 선택하여 주문한다 (ok)
-    - 고객이 결제한다 (ok)
-    - 주문이 되면 주문 내역이 입점상점주인에게 전달된다 (ok)
-    - 상점주인이 확인하여 요리해서 배달 출발한다 (ok)
-
-![image](https://user-images.githubusercontent.com/487999/79684170-47256a00-826a-11ea-9777-e16fafff519a.png)
-- 고객이 주문을 취소할 수 있다 (ok)
-- 주문이 취소되면 배달이 취소된다 (ok)
-- 고객이 주문상태를 중간중간 조회한다 (View-green sticker 의 추가로 ok)
-- 주문상태가 바뀔 때 마다 카톡으로 알림을 보낸다 (?)
+    - Event Storming 통한 마이크로 서비스 식별 및 Key Concept 도출
 
 
-### 모델 수정
+### 서비스 매핑 다이어그램
 
-![image](https://user-images.githubusercontent.com/487999/79684176-4e4c7800-826a-11ea-8deb-b7b053e5d7c6.png)
+![image](https://factory-git.cloudzcp.io/attachments/c1afe514-6f40-476e-a50f-6e8987d62786)
 
-    - 수정된 모델은 모든 요구사항을 커버함.
+    - API Gateway로 유입되는 요청 및 마이크로 서비스 간 매핑 다이어그램
+        - API Gateway 유입 요청에 대한 인증 정보 확인 후 각 마이크로 서비스로 라우팅
+        - User, Pet, Match, Diary, Assessment 서비스는 기본적으로 메시지 큐(Kafka)통해 이벤트 기반 Pub/Sub 방식으로 통신
+        - 실시간 조회 필요 시 REST 기반 Sync 직접 호출 수행
 
-### 비기능 요구사항에 대한 검증
+## 3.4 시나리오 기능적/비기능적 요구사항을 커버 검증
 
-![image](https://user-images.githubusercontent.com/487999/79684184-5c9a9400-826a-11ea-8d87-2ed1e44f4562.png)
+![image](https://factory-git.cloudzcp.io/attachments/a4b4482f-dade-433d-b68c-5dd3b037ae9d)
 
-    - 마이크로 서비스를 넘나드는 시나리오에 대한 트랜잭션 처리
-        - 고객 주문시 결제처리:  결제가 완료되지 않은 주문은 절대 받지 않는다는 경영자의 오랜 신념(?) 에 따라, ACID 트랜잭션 적용. 주문완료시 결제처리에 대해서는 Request-Response 방식 처리
-        - 결제 완료시 점주연결 및 배송처리:  App(front) 에서 Store 마이크로서비스로 주문요청이 전달되는 과정에 있어서 Store 마이크로 서비스가 별도의 배포주기를 가지기 때문에 Eventual Consistency 방식으로 트랜잭션 처리함.
-        - 나머지 모든 inter-microservice 트랜잭션: 주문상태, 배달상태 등 모든 이벤트에 대해 카톡을 처리하는 등, 데이터 일관성의 시점이 크리티컬하지 않은 모든 경우가 대부분이라 판단, Eventual Consistency 를 기본으로 채택함.
+    - 기능적 요구사항 커버 검증
+        - 시터가 회원이 맡기기 원하는 애완동물을 선택하여 매칭 요청을 한다. (ok)
+        - 회원과 시터가 각자의 정보를 며 매칭을 승인하거나 거절한다. (ok)
+        - 회원과 시터가 서로 매칭되고나면 애완동물의 돌봄이 시작된다. (ok)
+        - 시터가 돌보고 있는 애완동물의 일지를 작성한다. (ok)
+        - 회원이 돌봄이 끝난 시터를 평가한다. (ok)
+        - 시터가 돌봄이 끝난 애완동물을 평가한다. (ok)
+    - 비기능적 요구사항 커버 검증
+        - 매칭 시 회원 정보와 애완동물 정보는 실시간으로 조회해서 보여줘야 한다. Sync 호출 (ok)
+        - 매칭 기능이 수행되지 않더라도 회원 등록 및 애완동물 등록 가능해야 한다. Async (event-driven), Eventual Consistency (ok)
+        - 평가 기능이 수행되지 않더라도 사용자, 매칭, 애완동물, 일지 등록 기능은 정상 작동해야 한다. Async (event-driven), Eventual Consistency (ok)
+        - 매칭 기능에 과부하가 걸리면 매칭을 잠시동안 진행하지 않고 잠시후에 하도록 유도한다. Circuit breaker, fallback (ok)
+        - 회원이 돌봄 상태를 실시간으로 조회할 수 있어야 한다. CQRS (ok)
 
+### 서비스 스펙 정의
 
+![image](https://factory-git.cloudzcp.io/attachments/310e6787-e88f-4c73-9c70-5fbe39da787c)
 
+    - 도출된 마이크로서비스 User, Pet, Match, Diary, Assessment 각 서비스별 도메인 모델링
 
-## 헥사고날 아키텍처 다이어그램 도출
+## 3.5 헥사고날 아키텍처 다이어그램 도출
 
-![image](https://user-images.githubusercontent.com/487999/79684772-eba9ab00-826e-11ea-9405-17e2bf39ec76.png)
+![image](https://factory-git.cloudzcp.io/attachments/7ed5615d-3281-40c6-a38b-9bce75923a29)
 
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
     - 호출관계에서 PubSub 과 Req/Resp 를 구분함
     - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
 
-# 3. 분석/설계
-## 1) Outer/Inner Architecture
+
+
+## 3.6 Outer/Inner Architecture
 <img src="https://postfiles.pstatic.net/MjAyMTA3MTZfMTAw/MDAxNjI2MzY4MTQ0OTc2.N-i7XwIgqObq2tixuDgotFDOR0wdkSwOyq75XwoYcYcg.pgq6TyfzW3W2QDUpHv9TslMbaTVhTRzMDAekbFiM4bAg.JPEG.ttann/architecture.JPG?type=w966">
 
-## 2) 구현 패턴
-###  3-1) Database per service 
+## 3.7 구현 패턴
+###  3.7.1 Database per service 
 ###### - framework : mairaDB
 ###### - 각 마이크로 서비스별 분리된 Database를 사용한다 
 
@@ -227,12 +215,12 @@
 | Assess    | factory-zdb-petdb-mariadb.factory-zdb:3306/petmily-assess     |
 
 
-### 3-2) Service Registry  & API Gateway 
+### 3.7.2 Service Registry  & API Gateway 
 ###### - framework : Ingress
 ######  - 각 마이크로서비스는 독립된 dns url을 가지며, ingress에 설정된 route rule에 의해 트래픽 라우팅 된다. 
 ######  - 유형 : DNS 기반(kube-dns) 적용 
  
-| 서비스 | DB|
+| 서비스 | DNS URL |
 | -------- | -------- | 
 | User    | http://petmily.factory-dev.cloudzcp.com/user    |
 | Pet    | http://petmily.factory-dev.cloudzcp.com/pet     |
@@ -282,16 +270,16 @@ spec:
         path: /user/(.*)
         
 ```
-### 3-3) Client-side UI Composition
-######  - framework  : react + MVVN 패턴
-######  frontend도 backend 마이크로서비스처럼 기능별로 분리하고 이를 조합하기 위한 frame 형태의 부모창을 통해 각 frontend component를 조합하여 동작하게 한다. 부모서비스는 틀만 가지며 실제 각 기능표현은 frontend component가 구현하게 한다.  비스니스 규현을 위해 frontend는 여러개의 backend 마이크로서비스 API를 호출한다
-######  - 적용사례 : Petmily main 화면내 sitter, pet, 리뷰 조회는 별개의 frontend component가 수행하며, main화면은 화면의 틀
+### 3.7.3 Client-side UI Composition
+######  - framework  : react + MVVM 패턴
+######  - front-end도 back-end 마이크로서비스처럼 기능별로 분리하고 이를 조합하기 위한 frame 형태의 부모창을 통해 각 front-end component를 조합하여 동작하게 한다. 부모서비스는 틀만 가지며 실제 각 기능표현은 front-end component가 구현하게 한다.  비스니스 규현을 위해 front-end는 여러개의 back-end 마이크로서비스 API를 호출한다
+######  - 적용사례 : Petmily main 화면내 sitter, pet, 리뷰 조회는 별개의 front-end component가 수행하며, main화면은 화면의 틀을 구성한다
 <img src="https://postfiles.pstatic.net/MjAyMTA3MTZfMjg3/MDAxNjI2MzY5NDg5ODEy.au99670qK10EDXuPdbVbnm2NdRm_Llxu8vmvhac92ksg.44LyJLgcJJ5WyuuGGmlcB8vDWYZu1W6fqVC0j1Vc06kg.JPEG.ttann/Client-side_UI_Composition.JPG?type=w966">
 
 
 
-### 3-4) 인증/인가 패턴
-######  - framework  : react Security(JWT(JSON Web Token) 기반) + redis 
+### 3.7.4 인증/인가 패턴
+######  - framework  : Spring Security(JWT(JSON Web Token) 기반) + redis 
 ######  - 적용사례 : 사용자 로그인시 Token을 발행하고, 리소스 접근시 토큰을 확인하여 인가 허용한다. 사용자의 시터 등록 승인기능은 ADMIN_ROLE을 가진 Admin 계정만 가능하도록 권한 구성하였음.
 ######  - 관련 로직  :
 ```
@@ -358,7 +346,7 @@ public class TokenProvider {
 
 ```
 
-### 3-5) 기타
+### 3.7.5 기타
 
 ###### - Circuit Breaker : Petmily 사이트는 매치상태, 회원/시터상태 변경시 비동기, 이벤트 기반으로 처리하여 별도로 Circuit Breaker 적용하지 않았음. 
 
@@ -813,9 +801,8 @@ public interface UserFeignSyncService {
 # 6. 운영
 
 ## 6.1. Auto-Scaler Policy
-Horizontal Pod Autoscaler를 추가 하여 CPU 사용률에 따라 Pod가 Scale Out 될 수 있도록 설정
+Horizontal Pod Autoscaler를 추가 하여 CPU 사용률에 따라 Scale Out 될 수 있도록 설정
 ````
-(yml 현행화 필요)
 apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
@@ -834,37 +821,24 @@ spec:
       target:
         type: Utilization
         averageUtilization: 50
-status:
-  observedGeneration: 1
-  lastScaleTime: <some-time>
-  currentReplicas: 1
-  desiredReplicas: 1
-  currentMetrics:
-  - type: Resource
-    resource:
-      name: cpu
-      current:
-        averageUtilization: 0
-        averageValue: 0
 ...        
 ````
 
 ## 6.2. 블루-그린 배포
 기존의 Rolling 배포 방식을 배포 시간 동안의 버전 Compatibility 문제와 빠른 Rollback을 위해 Blue-Green으로 배포 전략을 변경
 ````
+(Jenkins Script 변경 후 현행화 필요)
+...
 apiVersion: v1
 kind: Service
 metadata:
-  name: test-service
+  name: petmily-match-blue
 spec:
-  ports:
-    - port: 80
-      targetPort: 8080
   selector:
-    app: test-pod
+    app: petmily-match
     color: blue
+...
     
-(yml 현행화 필요)
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -947,7 +921,7 @@ Security Config
 				.anyRequest()
 				.authenticated();
 
-
+(Jenkins Script 변경 후 현행화 필요)
 Deployment - patch
 apiVersion: apps/v1
 kind: Deployment
