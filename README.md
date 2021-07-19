@@ -130,7 +130,7 @@
 
 
 ## 3.1 조직 (Scrum Team Board)
-![image](![3_1 ScrumTeam Board](https://user-images.githubusercontent.com/67447558/126139765-1a5d6d27-9db0-47bb-8449-70895e4dabcd.jpg)
+![3_1 ScrumTeam Board](https://user-images.githubusercontent.com/67447558/126139765-1a5d6d27-9db0-47bb-8449-70895e4dabcd.jpg)
 - 스크럼 팀은 관리자가 없으며 자율적, 주도적으로 일하는 조직으로 구성
 
 ## 3.2 Team Project Vision
