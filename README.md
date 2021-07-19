@@ -17,10 +17,10 @@
     - [배포](#5-배포Container)
         - [CI/CD](#5-배포Container)
     - [운영](#6-운영)
-        - [Auto-Scaler Policy](#61-Auto-Scaler-Policy)
-        - [블루-그린 배포](#62-블루-그린-배포)
-        - [모니터링](#63-모니터링)
-        - [로깅](#64-로깅)
+        - [Auto-Scaler Policy](#6.1-Auto-Scaler-Policy)
+        - [블루-그린 배포](#6.2-블루-그린-배포)
+        - [모니터링](#6.3-모니터링)
+        - [로깅](#6.4-로깅)
 
 # 1. 서비스 시나리오
 
@@ -130,15 +130,15 @@
 
 
 ## 3.1 조직 (Scrum Team Board)
-<img src="https://factory-git.cloudzcp.io/attachments/4ff517aa-a649-466a-af62-6ad7c0ce9601">
+![image](https://factory-git.cloudzcp.io/attachments/4ff517aa-a649-466a-af62-6ad7c0ce9601)
 - 스크럼 팀은 관리자가 없으며 자율적, 주도적으로 일하는 조직으로 구성
 
 ## 3.2 Team Project Vision
-<img src="https://factory-git.cloudzcp.io/attachments/385a9faa-649e-4818-97de-687c758869de">
+![image](https://factory-git.cloudzcp.io/attachments/385a9faa-649e-4818-97de-687c758869de)
 - 스크럼 팀 프로젝트 Petmily의 Vision 정의
 
 ## 3.3 Event Storming 결과
-<img src="https://factory-git.cloudzcp.io/attachments/2d4e103b-cfd6-4577-b1a5-f0bb0de2de1a">
+![image](https://factory-git.cloudzcp.io/attachments/2d4e103b-cfd6-4577-b1a5-f0bb0de2de1a)
 
     - DDD(Domain Driven Design) 도메인 주도 설계 통한 마이크로서비스 식별
         - Domain Event, Hot Spot, Command, Actor, Entity, Aggregate 찾기
@@ -148,14 +148,14 @@
         - 각 MSA 서비스별 Service Specification(서비스 스펙) 작성
 ### Key Concept
 
-<img src="https://factory-git.cloudzcp.io/attachments/aacfde0a-3870-4164-afe4-c0f4a05c3c8f">
+![image](https://factory-git.cloudzcp.io/attachments/aacfde0a-3870-4164-afe4-c0f4a05c3c8f)
 
     - Event Storming 통한 마이크로 서비스 식별 및 Key Concept 도출
 
 
 ### 서비스 매핑 다이어그램
 
-<img src="https://factory-git.cloudzcp.io/attachments/c1afe514-6f40-476e-a50f-6e8987d62786">
+![image](https://factory-git.cloudzcp.io/attachments/c1afe514-6f40-476e-a50f-6e8987d62786)
 
     - API Gateway로 유입되는 요청 및 마이크로 서비스 간 매핑 다이어그램
         - API Gateway 유입 요청에 대한 인증 정보 확인 후 각 마이크로 서비스로 라우팅
@@ -164,7 +164,7 @@
 
 ## 3.4 시나리오 기능적/비기능적 요구사항을 커버 검증
 
-<img src="https://factory-git.cloudzcp.io/attachments/a4b4482f-dade-433d-b68c-5dd3b037ae9d">
+![image](https://factory-git.cloudzcp.io/attachments/a4b4482f-dade-433d-b68c-5dd3b037ae9d)
 
     - 기능적 요구사항 커버 검증
         - 시터가 회원이 맡기기 원하는 애완동물을 선택하여 매칭 요청을 한다. (ok)
@@ -177,18 +177,18 @@
         - 매칭 시 회원 정보와 애완동물 정보는 실시간으로 조회해서 보여줘야 한다. Sync 호출 (ok)
         - 매칭 기능이 수행되지 않더라도 회원 등록 및 애완동물 등록 가능해야 한다. Async (event-driven), Eventual Consistency (ok)
         - 평가 기능이 수행되지 않더라도 사용자, 매칭, 애완동물, 일지 등록 기능은 정상 작동해야 한다. Async (event-driven), Eventual Consistency (ok)
-        - 매칭 기능에 과부하가 걸리면 매칭을 잠시동안 진행하지 않고 잠시후에 하도록 유도한다. Circuit breaker, fallback (ok)
-        - 회원이 돌봄 상태를 실시간으로 조회할 수 있어야 한다. CQRS (ok)
+        - 매칭 기능에 과부하가 걸리면 매칭을 잠시동안 진행하지 않고 잠시후에 하도록 유도한다. Circuit breaker, fallback (-)
+        - 회원이 돌봄 상태를 실시간으로 조회할 수 있어야 한다. CQRS (-)
 
 ### 서비스 스펙 정의
 
-<img src="https://factory-git.cloudzcp.io/attachments/310e6787-e88f-4c73-9c70-5fbe39da787c">
+![image](https://factory-git.cloudzcp.io/attachments/310e6787-e88f-4c73-9c70-5fbe39da787c)
 
     - 도출된 마이크로서비스 User, Pet, Match, Diary, Assessment 각 서비스별 도메인 모델링
 
 ## 3.5 헥사고날 아키텍처 다이어그램 도출
 
-<img src="https://factory-git.cloudzcp.io/attachments/7ed5615d-3281-40c6-a38b-9bce75923a29">
+![image](https://factory-git.cloudzcp.io/attachments/7ed5615d-3281-40c6-a38b-9bce75923a29)
 
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
@@ -346,7 +346,15 @@ public class TokenProvider {
 
 ```
 
-### 3.7.5 기타
+### 3.7.5 CQRS 패턴
+######  - CQRS 패턴 구현을 위해 별도의 View Service를 설계 (미구현)
+######  - 적용사례 : Pet 등록시, Match 승인시, 돌봄 종료시, Pet Diary 등록시 View Service에 비동기식 Event를 전송하여 View 데이터 저장
+Spring 계열에서는 Axon Framework 를 많이 사용하는 것으로 보임. 각 App에서 발생하는 각각의 모든 Entity 들의 변경사항들에 대해 Topic내에 Event를 Produce
+시키도록 하고 (현재 구현상태) 이 발생하는 Event를 별도의 System을 구축하여 Event 축적에 따른 성능저하를 실제 시스템에서는 줄일 수 있을 방법이 될 수 있을 것 같음
+![image](https://factory-git.cloudzcp.io/attachments/99ede752-7427-4ae0-ba92-24655cc59500)
+
+
+### 3.7.6 기타
 
 ###### - Circuit Breaker : Petmily 사이트는 매치상태, 회원/시터상태 변경시 비동기, 이벤트 기반으로 처리하여 별도로 Circuit Breaker 적용하지 않았음. 
 
@@ -813,14 +821,8 @@ spec:
     kind: Deployment
     name: petmily-match
   minReplicas: 1
-  maxReplicas: 2
-  metrics:
-  - type: Resource
-    resource:
-      name: cpu
-      target:
-        type: Utilization
-        averageUtilization: 50
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 50
 ...        
 ````
 
@@ -885,8 +887,10 @@ spec:
 
 ````
 ## 6.3 모니터링
-Pod 내 Application을 모니터링 하기 위해 Spring Boot Actuator를 적용하고 Prometheus Exporter를 이용해 Customer Metric 정보를 수집하고
-이를 통해 HPA를 통해 AutoScale 설정을 적용
+Spring Boot Actuator를 이용해 Prometheus Metric 정보를 수집 함
+ZCP Cluster에 설치되어 있는 Prometheus 서버를 이용해 Customer Metric 정보를 수집하고 이를 통해 HPA를 통해 AutoScale 설정을 적용할 수 있음
+
+http://petmily.factory-dev.cloudzcp.com/match/actuator/prometheus
 ````
 Pom.xml
         <!-- Heath Check -->
@@ -921,31 +925,13 @@ Security Config
 				.anyRequest()
 				.authenticated();
 
-(Jenkins Script 변경 후 현행화 필요)
-Deployment - patch
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: sample-spring-boot-on-kubernetes-deployment
-spec:
-  selector:
-    matchLabels:
-      app: sample-spring-boot-on-kubernetes
-  template:
-    metadata:
-      annotations:
-        prometheus.io/path: /actuator/prometheus
-        prometheus.io/scrape: "true"
-        prometheus.io/port: "8380"
-      labels:
-        app: petmily-match
-    spec:
-
 ````
 Grafana의 Promethus Plugin을 통해 Metric 정보를 시각화 할 수도 있을 것 같다.
 
 ## 6.4 로깅
 LogStash Appender를 사용해 Cluster내 설치 된 Elk Stack에 Log를 기록하고 ElasticSearch/Kibana를 통해 시각화 할 수 있음
+
+https://factory-logging.cloudzcp.io/app/kibana#/discover/26d7f020-e537-11eb-91ac-8992604aeb6a?_g=(refreshInterval%3A(display%3AOff%2Cpause%3A!f%2Cvalue%3A0)%2Ctime%3A(from%3Anow%2Fd%2Cmode%3Aquick%2Cto%3Anow%2Fd))
 ````
 pom.xml
         <!-- LogStash Appender-->
