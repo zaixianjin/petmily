@@ -130,15 +130,16 @@
 
 
 ## 3.1 조직 (Scrum Team Board)
-![image](https://factory-git.cloudzcp.io/attachments/4ff517aa-a649-466a-af62-6ad7c0ce9601)
+![image](![3_1 ScrumTeam Board](https://user-images.githubusercontent.com/67447558/126139765-1a5d6d27-9db0-47bb-8449-70895e4dabcd.jpg)
 - 스크럼 팀은 관리자가 없으며 자율적, 주도적으로 일하는 조직으로 구성
 
 ## 3.2 Team Project Vision
-![image](https://factory-git.cloudzcp.io/attachments/385a9faa-649e-4818-97de-687c758869de)
+![3_2 Vision](https://user-images.githubusercontent.com/67447558/126139848-c53230a7-7e1b-4992-b0c1-0fdb736fce75.jpg)
+
 - 스크럼 팀 프로젝트 Petmily의 Vision 정의
 
 ## 3.3 Event Storming 결과
-![image](https://factory-git.cloudzcp.io/attachments/2d4e103b-cfd6-4577-b1a5-f0bb0de2de1a)
+![3_3 eventstorming](https://user-images.githubusercontent.com/67447558/126139885-72c0afe7-3ec1-40bb-b06b-31616c6764e1.png)
 
     - DDD(Domain Driven Design) 도메인 주도 설계 통한 마이크로서비스 식별
         - Domain Event, Hot Spot, Command, Actor, Entity, Aggregate 찾기
@@ -148,14 +149,14 @@
         - 각 MSA 서비스별 Service Specification(서비스 스펙) 작성
 ### Key Concept
 
-![image](https://factory-git.cloudzcp.io/attachments/aacfde0a-3870-4164-afe4-c0f4a05c3c8f)
+![3_3_1 KeyConcept](https://user-images.githubusercontent.com/67447558/126139973-ffebe2b8-9ef8-41d0-96ab-4c750f4704fb.png)
 
     - Event Storming 통한 마이크로 서비스 식별 및 Key Concept 도출
 
 
 ### 서비스 매핑 다이어그램
 
-![image](https://factory-git.cloudzcp.io/attachments/c1afe514-6f40-476e-a50f-6e8987d62786)
+![3_3_2 MappingDiagram](https://user-images.githubusercontent.com/67447558/126139997-559aa042-c1c1-4043-9a77-4247d736e13d.png)
 
     - API Gateway로 유입되는 요청 및 마이크로 서비스 간 매핑 다이어그램
         - API Gateway 유입 요청에 대한 인증 정보 확인 후 각 마이크로 서비스로 라우팅
@@ -164,7 +165,7 @@
 
 ## 3.4 시나리오 기능적/비기능적 요구사항을 커버 검증
 
-![image](https://factory-git.cloudzcp.io/attachments/a4b4482f-dade-433d-b68c-5dd3b037ae9d)
+![3_4 ScenarioModel](https://user-images.githubusercontent.com/67447558/126140026-8d9a7648-a3e4-4321-8315-157ad4388c40.JPG)
 
     - 기능적 요구사항 커버 검증
         - 시터가 회원이 맡기기 원하는 애완동물을 선택하여 매칭 요청을 한다. (ok)
@@ -182,19 +183,17 @@
 
 ### 서비스 스펙 정의
 
-![image](https://factory-git.cloudzcp.io/attachments/310e6787-e88f-4c73-9c70-5fbe39da787c)
+![3_4_1 Design](https://user-images.githubusercontent.com/67447558/126140065-ce9cc0b3-a29f-46ea-8024-a2cb7bce2dc5.png)
 
     - 도출된 마이크로서비스 User, Pet, Match, Diary, Assessment 각 서비스별 도메인 모델링
 
 ## 3.5 헥사고날 아키텍처 다이어그램 도출
 
-![image](https://factory-git.cloudzcp.io/attachments/7ed5615d-3281-40c6-a38b-9bce75923a29)
-
+![3_5 Architecture](https://user-images.githubusercontent.com/67447558/126140088-6cbff6c4-81b1-404d-af8e-2f58660ac1c5.png)
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
     - 호출관계에서 PubSub 과 Req/Resp 를 구분함
     - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
-
 
 
 ## 3.6 Outer/Inner Architecture
