@@ -396,8 +396,7 @@ public class TokenProvider {
 ######  - 적용사례 : Pet 등록시, Match 승인시, 돌봄 종료시, Pet Diary 등록시 View Service에 비동기식 Event를 전송하여 View 데이터 저장
 Spring 계열에서는 Axon Framework 를 많이 사용하는 것으로 보임. 각 App에서 발생하는 각각의 모든 Entity 들의 변경사항들에 대해 Topic내에 Event를 Produce
 시키도록 하고 (현재 구현상태) 이 발생하는 Event를 별도의 System을 구축하여 Event 축적에 따른 성능저하를 실제 시스템에서는 줄일 수 있을 방법이 될 수 있을 것 같음
-<img width="1460" alt="3 7 6_스크린샷 2021-07-17 오후 9 16 38" src="https://user-images.githubusercontent.com/67447558/131272695-a36fda4c-ae40-452c-b1e2-e2643e2c5d5e.png">
-
+<img width="1460" alt="3 7 6_CQRS패턴" src="https://user-images.githubusercontent.com/67447558/131315096-85d8a876-6d97-4305-81df-f078de9c31a0.png">
 
 
 ### 3.7.7 기타
