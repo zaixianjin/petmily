@@ -48,6 +48,8 @@
 1. 장애격리
     1. 매칭 기능이 수행되지 않더라도 회원 등록 및 애완동물 등록 가능해야 한다.   Async (event-driven), Eventual Consistency
     2. 평가 기능이 수행되지 않더라도 사용자, 매칭, 애완동물, 일지 등록 기능은 정상 작동해야 한다. Async (event-driven), Eventual Consistency
+    3. 매칭 기능에 과부하가 걸리면 매칭을 잠시동안 진행하지 않고 잠시후에 하도록 유도한다. Circuit breaker, fallback (-)
+    4. 시터요청을 Admin이 승인하는 event에 따라 시터의 pet돌봄 지원서를 자동 생성할때, 지원서 생성 오류가 발생하면 시터의 승인을 원복한다. fallback
 1. 성능
     1. 회원이 돌봄 상태를 실시간으로 조회할 수 있어야 한다.  
 
@@ -130,16 +132,15 @@
 
 
 ## 3.1 조직 (Scrum Team Board)
-![3_1 ScrumTeam Board](https://user-images.githubusercontent.com/67447558/126139765-1a5d6d27-9db0-47bb-8449-70895e4dabcd.jpg)
+![image](https://factory-git.cloudzcp.io/attachments/4ff517aa-a649-466a-af62-6ad7c0ce9601)
 - 스크럼 팀은 관리자가 없으며 자율적, 주도적으로 일하는 조직으로 구성
 
 ## 3.2 Team Project Vision
-![3_2 Vision](https://user-images.githubusercontent.com/67447558/126139848-c53230a7-7e1b-4992-b0c1-0fdb736fce75.jpg)
-
+![image](https://factory-git.cloudzcp.io/attachments/385a9faa-649e-4818-97de-687c758869de)
 - 스크럼 팀 프로젝트 Petmily의 Vision 정의
 
 ## 3.3 Event Storming 결과
-![3_3 eventstorming](https://user-images.githubusercontent.com/67447558/126139885-72c0afe7-3ec1-40bb-b06b-31616c6764e1.png)
+![image](https://factory-git.cloudzcp.io/attachments/2d4e103b-cfd6-4577-b1a5-f0bb0de2de1a)
 
     - DDD(Domain Driven Design) 도메인 주도 설계 통한 마이크로서비스 식별
         - Domain Event, Hot Spot, Command, Actor, Entity, Aggregate 찾기
@@ -149,14 +150,14 @@
         - 각 MSA 서비스별 Service Specification(서비스 스펙) 작성
 ### Key Concept
 
-![3_3_1 KeyConcept](https://user-images.githubusercontent.com/67447558/126139973-ffebe2b8-9ef8-41d0-96ab-4c750f4704fb.png)
+![image](https://factory-git.cloudzcp.io/attachments/aacfde0a-3870-4164-afe4-c0f4a05c3c8f)
 
     - Event Storming 통한 마이크로 서비스 식별 및 Key Concept 도출
 
 
 ### 서비스 매핑 다이어그램
 
-![3_3_2 MappingDiagram](https://user-images.githubusercontent.com/67447558/126139997-559aa042-c1c1-4043-9a77-4247d736e13d.png)
+![image](https://factory-git.cloudzcp.io/attachments/c1afe514-6f40-476e-a50f-6e8987d62786)
 
     - API Gateway로 유입되는 요청 및 마이크로 서비스 간 매핑 다이어그램
         - API Gateway 유입 요청에 대한 인증 정보 확인 후 각 마이크로 서비스로 라우팅
@@ -165,7 +166,7 @@
 
 ## 3.4 시나리오 기능적/비기능적 요구사항을 커버 검증
 
-![3_4 ScenarioModel](https://user-images.githubusercontent.com/67447558/126140026-8d9a7648-a3e4-4321-8315-157ad4388c40.JPG)
+![image](https://factory-git.cloudzcp.io/attachments/a4b4482f-dade-433d-b68c-5dd3b037ae9d)
 
     - 기능적 요구사항 커버 검증
         - 시터가 회원이 맡기기 원하는 애완동물을 선택하여 매칭 요청을 한다. (ok)
@@ -179,21 +180,24 @@
         - 매칭 기능이 수행되지 않더라도 회원 등록 및 애완동물 등록 가능해야 한다. Async (event-driven), Eventual Consistency (ok)
         - 평가 기능이 수행되지 않더라도 사용자, 매칭, 애완동물, 일지 등록 기능은 정상 작동해야 한다. Async (event-driven), Eventual Consistency (ok)
         - 매칭 기능에 과부하가 걸리면 매칭을 잠시동안 진행하지 않고 잠시후에 하도록 유도한다. Circuit breaker, fallback (-)
+        - 시터요청을 Admin이 승인하는 event에 따라 시터의 pet돌봄 지원서를 자동 생성할때, 지원서 생성 오류가 발생하면 시터의 승인을 원복한다. fallback (ok)
         - 회원이 돌봄 상태를 실시간으로 조회할 수 있어야 한다. CQRS (-)
 
 ### 서비스 스펙 정의
 
-![3_4_1 Design](https://user-images.githubusercontent.com/67447558/126140065-ce9cc0b3-a29f-46ea-8024-a2cb7bce2dc5.png)
+![image](https://factory-git.cloudzcp.io/attachments/310e6787-e88f-4c73-9c70-5fbe39da787c)
 
     - 도출된 마이크로서비스 User, Pet, Match, Diary, Assessment 각 서비스별 도메인 모델링
 
 ## 3.5 헥사고날 아키텍처 다이어그램 도출
 
-![3_5 Architecture](https://user-images.githubusercontent.com/67447558/126140088-6cbff6c4-81b1-404d-af8e-2f58660ac1c5.png)
+![image](https://factory-git.cloudzcp.io/attachments/7ed5615d-3281-40c6-a38b-9bce75923a29)
+
 
     - Chris Richardson, MSA Patterns 참고하여 Inbound adaptor와 Outbound adaptor를 구분함
     - 호출관계에서 PubSub 과 Req/Resp 를 구분함
     - 서브 도메인과 바운디드 컨텍스트의 분리:  각 팀의 KPI 별로 아래와 같이 관심 구현 스토리를 나눠가짐
+
 
 
 ## 3.6 Outer/Inner Architecture
@@ -201,7 +205,7 @@
 
 ## 3.7 구현 패턴
 ###  3.7.1 Database per service 
-###### - framework : mairaDB
+###### - framework : mariaDB
 ###### - 각 마이크로 서비스별 분리된 Database를 사용한다 
 
 
@@ -214,18 +218,9 @@
 | Assess    | factory-zdb-petdb-mariadb.factory-zdb:3306/petmily-assess     |
 
 
-### 3.7.2 Service Registry  & API Gateway 
-###### - framework : Ingress
-######  - 각 마이크로서비스는 독립된 dns url을 가지며, ingress에 설정된 route rule에 의해 트래픽 라우팅 된다. 
-######  - 유형 : DNS 기반(kube-dns) 적용 
- 
-| 서비스 | DNS URL |
-| -------- | -------- | 
-| User    | http://petmily.factory-dev.cloudzcp.com/user    |
-| Pet    | http://petmily.factory-dev.cloudzcp.com/pet     |
-| Match    |http://petmily.factory-dev.cloudzcp.com/match    |
-| Diary    | http://petmily.factory-dev.cloudzcp.com/diary    |
-| Assess    | http://petmily.factory-dev.cloudzcp.com/assess     |
+### 3.7.2 API Gateway && Service Discovery 
+###### - framework : Ingress && kubernetes Service
+###### - Ingress는  서비스에 대한 외부 접근을 관리하는 API 오브젝트이며 유입되는 요청을 ingress에 설정된 route rule기반으로 트래픽 라우팅 한다.  유입된 요청은 쿠버네티스에서 제공하는 Service Discovery 매커니즘에 의해 Pod로 로드발란싱 된다.  
 
 ###### - 설정 : Ingress 설정
 ```
@@ -269,18 +264,22 @@ spec:
         path: /user/(.*)
         
 ```
-### 3.7.3 Client-side UI Composition
-######  - framework  : react + MVVM 패턴
+###### - Service Discovery (kubernetes IP 할당 정보와 셀렉터) 
+ * kubernetes는 서비스에 Cluster IP를, pod에 고유한 IP와 DNS명을 부여한다. 서비스 셀렉터의 컨트롤러는 셀렉터와 일치하는 pod를 지속적으로 검색하고 오브젝트 변경시 POST 한다. (Service Registry) 
+<img src="https://postfiles.pstatic.net/MjAyMTA3MjBfMTAy/MDAxNjI2NzExNjE5NTM1.1hOPwLLAxM1oxKkJwToTO4XHpvO71Pvpb1KkZDVi1MMg.wMykdQF4U_iJ0Z15_qwL3_Gf7d4x3BaW6FHxbM2ZFSAg.JPEG.ttann/service_discovery.JPG?type=w966"/>
+
+
+### 3.7.3 Client-side UI Composition 
+######  - framework  : react 
 ######  - front-end도 back-end 마이크로서비스처럼 기능별로 분리하고 이를 조합하기 위한 frame 형태의 부모창을 통해 각 front-end component를 조합하여 동작하게 한다. 부모서비스는 틀만 가지며 실제 각 기능표현은 front-end component가 구현하게 한다.  비스니스 규현을 위해 front-end는 여러개의 back-end 마이크로서비스 API를 호출한다
 ######  - 적용사례 : Petmily main 화면내 sitter, pet, 리뷰 조회는 별개의 front-end component가 수행하며, main화면은 화면의 틀을 구성한다
 <img src="https://postfiles.pstatic.net/MjAyMTA3MTZfMjg3/MDAxNjI2MzY5NDg5ODEy.au99670qK10EDXuPdbVbnm2NdRm_Llxu8vmvhac92ksg.44LyJLgcJJ5WyuuGGmlcB8vDWYZu1W6fqVC0j1Vc06kg.JPEG.ttann/Client-side_UI_Composition.JPG?type=w966">
 
 
-
 ### 3.7.4 인증/인가 패턴
 ######  - framework  : Spring Security(JWT(JSON Web Token) 기반) + redis 
 ######  - 적용사례 : 사용자 로그인시 Token을 발행하고, 리소스 접근시 토큰을 확인하여 인가 허용한다. 사용자의 시터 등록 승인기능은 ADMIN_ROLE을 가진 Admin 계정만 가능하도록 권한 구성하였음.
-######  - 관련 로직  :
+######  - 토큰 생성 및 인가 로직  :
 ```
 ##### Token Provider (user)
 @Service
@@ -345,7 +344,54 @@ public class TokenProvider {
 
 ```
 
-### 3.7.5 CQRS 패턴
+### 3.7.5 SAGA 패턴
+###### - framework : kafka 
+###### - 적용사례 : 사용자가 시터로 등록 후 Admin이 시터 승인하는 경우  시터 지원서 생성을 위해 Match서비스에서 이벤트 수신한다.(User서비스->Mathc서비스) 그러나 시터지원서 생성이 실패한 경우 Match 서비스는 보상트랜잭션을 발생시켜 시터 승인을 원복한다. 
+
+```
+##### 이벤트 리스너 (Match Service)
+
+                case "SitterApproved":
+
+                    Long sitterId = ((SitterApproved) abstractEvent).getSitterId();
+                    String sitterName = ((SitterApproved) abstractEvent).getSitterName();
+                    String sitterUsername = ((SitterApproved) abstractEvent).getSitterUsername();
+                    String introduce = ((SitterApproved) abstractEvent).getIntroduce();
+
+                    Sitter sitter = new Sitter(sitterId, sitterUsername, sitterName, introduce);
+                    try {
+	                    PetCareApplication application = new PetCareApplication();
+	                    application.setMatchStatus(MatchStatus.REGISTERED);
+	                    application.setSitter(sitter);
+	                    
+	                    petCareApplicationService.registerApplication(application, false);
+	                    //throw new IllegalArgumentException("Sitter Approved exception");
+	    
+                    }catch(Exception e) {
+                    	SitterApprovedReject sitterApprovedReject = new SitterApprovedReject();
+                        sitterApprovedReject.setLoginId(sitterUsername);
+                   	 	sitterApprovedReject.setSitterId(sitterId);
+                   	 	sitterApprovedReject.publish();
+                    }
+                    break;
+
+```
+
+```
+##### 이벤트 리스너 (User Service)
+
+		case "SitterApprovedReject":
+
+			sitterId = ((SitterApprovedReject) abstractEvent).getSitterId();					
+
+			SitterDto sitterReject = new SitterDto();
+			sitterReject.setUserId(sitterId);
+			sitterReject.setStatus(SitterStatusEnum.APPLY);
+			userService.statusUpdateSitter(sitterReject);
+			break;
+				
+```
+### 3.7.6 CQRS 패턴
 ######  - CQRS 패턴 구현을 위해 별도의 View Service를 설계 (미구현)
 ######  - 적용사례 : Pet 등록시, Match 승인시, 돌봄 종료시, Pet Diary 등록시 View Service에 비동기식 Event를 전송하여 View 데이터 저장
 Spring 계열에서는 Axon Framework 를 많이 사용하는 것으로 보임. 각 App에서 발생하는 각각의 모든 Entity 들의 변경사항들에 대해 Topic내에 Event를 Produce
@@ -353,7 +399,7 @@ Spring 계열에서는 Axon Framework 를 많이 사용하는 것으로 보임. 
 ![image](https://factory-git.cloudzcp.io/attachments/99ede752-7427-4ae0-ba92-24655cc59500)
 
 
-### 3.7.6 기타
+### 3.7.7 기타
 
 ###### - Circuit Breaker : Petmily 사이트는 매치상태, 회원/시터상태 변경시 비동기, 이벤트 기반으로 처리하여 별도로 Circuit Breaker 적용하지 않았음. 
 
@@ -512,7 +558,7 @@ http://petmily.factory-dev.cloudzcp.com/assess/swagger-ui.html
 # 매칭 서비스
 http://petmily.factory-dev.cloudzcp.com/match/swagger-ui.html
 
-# 팻 서비스
+# 펫 서비스
 http://petmily.factory-dev.cloudzcp.com/pet/swagger-ui.html
 
 # 유저 서비스
@@ -777,14 +823,92 @@ public interface UserFeignSyncService {
 <img src="https://user-images.githubusercontent.com/67447558/125728936-e6eac2a9-d837-4083-b3f6-c940182f78fd.PNG" width="700" height="370">
 
 ### 5.1.3 Jenkins 스크립트내 customize 부분
-- Git로 부터 소스 빌드 및 Docker image build, Deploy까지 정의 하여 실행함
+- Git로 부터 소스 빌드 및 Docker image build, Deploy까지 정의하여 실행함
 <img src="https://user-images.githubusercontent.com/67447558/125729858-e572973c-616b-4cf5-ae4a-c0a12b47cfd5.PNG" width="700" height="370">
 
-     그림) petmily-pet-Jenkinsfile-cicd내 config 설정 > pipeline 관련
+그림) petmily-pet-Jenkinsfile-cicd내 config 설정 > pipeline 관련
 
-<img src="https://user-images.githubusercontent.com/67447558/125730203-e07b71ca-1e9b-4b14-a6b9-dddb70386ae0.PNG" width="700" height="370">
+````
+petmily-configuraion\cicd\jenkins\petmily project\petmily-diary\Jenkinsfile-cicd 스크립트
+...
 
-     그림) pipeline 관련 실행스크립트 
+    podTemplate(label:label,
+        serviceAccount: "zcp-system-sa-${ZCP_USERID}",
+        containers: [
+            containerTemplate(name: 'maven', image: 'maven:3.6.3-jdk-11-slim', ttyEnabled: true, command: 'cat'),
+            containerTemplate(name: 'docker', image: 'docker:17-dind', ttyEnabled: true, command: 'dockerd-entrypoint.sh', privileged: true),
+            containerTemplate(name: 'tools', image: 'argoproj/argo-cd-ci-builder:v1.0.0', command: 'cat', ttyEnabled: true),
+            containerTemplate(name: 'kubectl', image: 'lachlanevenson/k8s-kubectl:v1.18.2', ttyEnabled: true, command: 'cat'),
+            containerTemplate(name: 'kustomize', image: 'gauravgaglani/k8s-kustomize:1.1.0', ttyEnabled: true, command: 'cat')
+        ],
+        volumes: [
+            persistentVolumeClaim(mountPath: '/root/.m2', claimName: 'zcp-jenkins-mvn-repo')
+        ]) {
+    
+        node(label) {
+            stage('SOURCE CHECKOUT') {
+                dir('APP_SRC_WORKSPACE') {
+                    checkout scm: [ \
+                        $class : 'GitSCM', branches: [[name: '*/master']], \
+                        submoduleCfg: [], \
+                        userRemoteConfigs: [[url: "https://${REPO_URL}", credentialsId: 'GIT_CREDENTIALS',]] \
+                    ]
+                }
+            }
+    
+            stage('BUILD') {
+                dir('APP_SRC_WORKSPACE') {
+                    configFileProvider([configFile(fileId: 'maven-settings', variable: 'MAVEN_SETTINGS')]) {
+                       container('maven') {
+                           mavenBuild goal: 'clean compile sonar:sonar -DskipTests=true -f pom.xml -s $MAVEN_SETTINGS', systemProperties:['maven.repo.local':"/root/.m2/${JOB_NAME}"]
+                       }
+                    }
+                    container('maven') {
+                        mavenBuild goal: 'clean package -DskipTests=true -f pom.xml', systemProperties:['maven.repo.local':"/root/.m2/${JOB_NAME}"]
+                    }
+                }
+            }
+    
+            stage('BUILD DOCKER IMAGE') {
+                dir('APP_SRC_WORKSPACE') {
+                    container('docker') {
+                        dockerCmd.withDockerRegistry([credentialsId:'HARBOR_CREDENTIALS', url:"https://${HARBOR_REGISTRY}"]) {
+                            def app = docker.build("${HARBOR_REGISTRY}/${DOCKER_IMAGE}:${DOCKER_VERSION}")
+                            app.push()
+                            app.push("latest")
+                        }
+                    }
+                }
+            }
+            
+            stage('CONFIG CHECKOUT') {
+                dir('CONFIG_SRC_WORKSPACE') {
+                    checkout scm
+                }
+            }
+    
+            stage('BUILD K8S YAML') {
+                dir('CONFIG_SRC_WORKSPACE') {
+                    container('kustomize') {
+                        sh "kustomize build --load_restrictor none --enable_kyaml=false ${DEPLOY_PATH} > deploy.yaml"
+                        echo 'Kubernetes 배포 yaml 생성 내역'
+                        sh 'cat deploy.yaml'
+                    }
+                }
+            }
+    
+            stage('DEPLOY') {
+                dir('CONFIG_SRC_WORKSPACE') {
+                    container('kubectl') {
+                        kubeCmd.apply file: 'deploy.yaml', wait: 300, recoverOnFail: false, namespace: K8S_NAMESPACE
+                        sh "kubectl rollout restart deployment ${DEPLOYMENT} -n ${K8S_NAMESPACE} "
+                    }
+                }
+            }
+        }
+    }
+
+````
 
 
      - 실행 단계 : SOURCE CHECKOUT / BUILD / BUILD DOCKER IMAGE / BUILD K8S YAML / DEPLOY
@@ -800,7 +924,7 @@ public interface UserFeignSyncService {
 
 ### 5.2.2 SonarQube 결과 대쉬보드
 - Petmily내 MSA서비스들에 대하여 SonarQube에서 제공하는 다양한 품질 항목에 대해서 확인할 수 있다
-<img src="https://user-images.githubusercontent.com/67447558/125293787-b64f1880-e35e-11eb-95bb-edeec0d50f99.PNG"  width="700" height="370">
+<img src="https://user-images.githubusercontent.com/67447558/126309451-4469fa6b-82e0-48d2-abba-d93c6cd334d0.PNG"  width="700" height="370">
 
    * 주요 기능 : 코드 품질 대쉬보드, 코드 중복, 코딩표준, 커버리지 부족, 잠재버그, 복잡도, 문서화, 설계에 대한 품질척도 표시
  
@@ -958,4 +1082,4 @@ logback-spring.xml
         <appender-ref ref="logstash"/>
     </logger>
 
-````
+
