@@ -17,10 +17,10 @@
     - [배포](#5-배포Container)
         - [CI/CD](#5-배포Container)
     - [운영](#6-운영)
-        - [Auto-Scaler Policy](#6.1-Auto-Scaler-Policy)
-        - [블루-그린 배포](#6.2-블루-그린-배포)
-        - [모니터링](#6.3-모니터링)
-        - [로깅](#6.4-로깅)
+        - [Auto-Scaler Policy](#61-Auto-Scaler-Policy)
+        - [블루-그린 배포](#62-블루-그린-배포)
+        - [모니터링](#63-모니터링)
+        - [로깅](#64-로깅)
 
 # 1. 서비스 시나리오
 
@@ -396,7 +396,8 @@ public class TokenProvider {
 ######  - 적용사례 : Pet 등록시, Match 승인시, 돌봄 종료시, Pet Diary 등록시 View Service에 비동기식 Event를 전송하여 View 데이터 저장
 Spring 계열에서는 Axon Framework 를 많이 사용하는 것으로 보임. 각 App에서 발생하는 각각의 모든 Entity 들의 변경사항들에 대해 Topic내에 Event를 Produce
 시키도록 하고 (현재 구현상태) 이 발생하는 Event를 별도의 System을 구축하여 Event 축적에 따른 성능저하를 실제 시스템에서는 줄일 수 있을 방법이 될 수 있을 것 같음
-![image](https://factory-git.cloudzcp.io/attachments/99ede752-7427-4ae0-ba92-24655cc59500)
+<img width="1460" alt="3 7 6_스크린샷 2021-07-17 오후 9 16 38" src="https://user-images.githubusercontent.com/67447558/131272695-a36fda4c-ae40-452c-b1e2-e2643e2c5d5e.png">
+
 
 
 ### 3.7.7 기타
