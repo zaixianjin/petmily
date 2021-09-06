@@ -220,7 +220,7 @@
 
 ### 3.7.2 API Gateway && Service Discovery 
 ###### - framework : Ingress && kubernetes Service
-###### - Ingress는  서비스에 대한 외부 접근을 관리하는 API 오브젝트이며 유입되는 요청을 ingress에 설정된 route rule기반으로 트래픽 라우팅 한다.  유입된 요청은 쿠버네티스에서 제공하는 Service Discovery 매커니즘에 의해 Pod로 로드발란싱 된다.  
+###### - Ingress는  서비스에 대한 외부 접근을 관리하는 API 오브젝트이며 유입되는 요청을 ingress에 설정된 route rule기반으로 트래픽 라우팅 한다. 유입된 요청은 쿠버네티스에서 제공하는 Service Discovery 매커니즘에 의해 Pod로 로드밸런싱 된다.  
 
 ###### - 설정 : Ingress 설정
 ```
